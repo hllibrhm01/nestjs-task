@@ -66,9 +66,11 @@ export class BookstoreBooksController {
         createBookstoreBookDto
       );
 
-      const result = await this.bookstoreBooksService.findOneWithJoin(bookstoreBook.id);
+      const result = await this.bookstoreBooksService.findOneWithJoin(
+        bookstoreBook.id
+      );
 
-      const response = new BookstoreBookOneResponseDto(); 
+      const response = new BookstoreBookOneResponseDto();
       response.result = new BookstoreBookResponseDto();
       response.result.bookId = result.bookId;
       response.result.bookstoreId = result.bookstoreId;
@@ -186,9 +188,15 @@ export class BookstoreBooksController {
     @Body() updateBookstoreBookDto: UpdateBookstoreBookDto
   ) {
     try {
-      const bookstoreBook = await this.bookstoreBooksService.update(user, id, updateBookstoreBookDto);
+      const bookstoreBook = await this.bookstoreBooksService.update(
+        user,
+        id,
+        updateBookstoreBookDto
+      );
 
-      const result = await this.bookstoreBooksService.findOneWithJoin(bookstoreBook.id);
+      const result = await this.bookstoreBooksService.findOneWithJoin(
+        bookstoreBook.id
+      );
 
       const response = new BookstoreBookOneResponseDto();
       response.result = new BookstoreBookResponseDto();

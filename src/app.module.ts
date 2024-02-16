@@ -15,6 +15,7 @@ import { APP_GUARD } from "@nestjs/core";
 import { Token } from "./auth/entities/token.entity";
 import { TokenModule } from "./token/token.module";
 import { JwtAuthGuard } from "./auth/jwt-auth.guard";
+import { AppService } from "./app.service";
 
 @Module({
   imports: [
@@ -33,8 +34,8 @@ import { JwtAuthGuard } from "./auth/jwt-auth.guard";
         entities: [User, Book, Bookstore, BookstoreBook, Token],
         synchronize: true,
         logging: false,
-        softDelete: true
-        // dropSchema: true
+        softDelete: true,
+        dropSchema: true
       }),
       inject: [ConfigService]
     }),
@@ -59,6 +60,7 @@ import { JwtAuthGuard } from "./auth/jwt-auth.guard";
   ],
   controllers: [],
   providers: [
+    AppService,
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard

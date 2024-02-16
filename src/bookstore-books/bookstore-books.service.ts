@@ -46,7 +46,7 @@ export class BookstoreBooksService extends CommonService<BookstoreBook> {
       createBookstoreBookDto.bookstoreId
     );
 
-    if(createBookstoreBookDto.bookQuantity < 0)
+    if (createBookstoreBookDto.bookQuantity < 0)
       throw new BadRequestException(`Book quantity cannot be negative`);
 
     const bookstoreBook = this.bookstoreBookRepository.create(
@@ -89,13 +89,6 @@ export class BookstoreBooksService extends CommonService<BookstoreBook> {
     if (!bookstoreBook)
       throw new NotFoundException(`Bookstore's book not found`);
 
-    if (
-      updateBookstoreBookDto.bookId !== undefined &&
-      updateBookstoreBookDto.bookstoreId !== undefined
-    ) {
-      // await this.checkBookstoreBookExists(updateBookstoreBookDto.bookId, updateBookstoreBookDto.bookstoreId);
-    }
-
     if (updateBookstoreBookDto.bookId !== undefined) {
       await this.bookService.findById(updateBookstoreBookDto.bookId);
 
@@ -114,7 +107,6 @@ export class BookstoreBooksService extends CommonService<BookstoreBook> {
     }
 
     if (updateBookstoreBookDto.bookQuantity !== undefined) {
-
       if (updateBookstoreBookDto.bookQuantity < 0)
         throw new BadRequestException(`Book quantity cannot be negative`);
 

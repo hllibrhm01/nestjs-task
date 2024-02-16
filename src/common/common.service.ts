@@ -1,16 +1,10 @@
-import {
-  DocumentNotFoundError,
-  PropertyNotFoundError
-} from "../utils/exceptions";
 import { SortByObject } from "../utils/sortBy";
-import { v4 } from "uuid";
 import {
   Repository,
   DeepPartial,
   EntityManager,
   FindOneOptions
 } from "typeorm";
-import { Injectable } from "@nestjs/common";
 
 type FilterQuery<T> = {};
 

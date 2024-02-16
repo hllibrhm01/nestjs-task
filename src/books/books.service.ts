@@ -18,9 +18,8 @@ export class BooksService extends CommonService<Book> {
   create(createBookDto: CreateBookDto) {
     const book = this.bookRepository.create(createBookDto);
 
-    if (createBookDto.price < 0)
-      throw new Error("Price cannot be negative.");
-    
+    if (createBookDto.price < 0) throw new Error("Price cannot be negative.");
+
     return this.bookRepository.save(book);
   }
 
@@ -34,11 +33,10 @@ export class BooksService extends CommonService<Book> {
     if (updateBookDto.publisher) book.publisher = updateBookDto.publisher;
     if (updateBookDto.publishedDate)
       book.publishedDate = updateBookDto.publishedDate;
-    if (updateBookDto.price) { 
+    if (updateBookDto.price) {
       book.price = updateBookDto.price;
-      
-      if (updateBookDto.price < 0)
-        throw new Error("Price cannot be negative.");
+
+      if (updateBookDto.price < 0) throw new Error("Price cannot be negative.");
     }
     if (updateBookDto.category) book.category = updateBookDto.category;
 

@@ -4,6 +4,8 @@ import { ConfigService } from "@nestjs/config";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import helmet from "helmet";
 import { VersioningType } from "@nestjs/common";
+import { User } from "./users/entities/user.entity";
+import { UsersService } from "./users/users.service";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
