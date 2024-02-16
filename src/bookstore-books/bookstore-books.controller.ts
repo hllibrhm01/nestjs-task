@@ -55,7 +55,7 @@ export class BookstoreBooksController {
 
   @Post()
   @UseGuards(RolesGuard)
-  @Roles(RoleEnum.STORE_MANAGER, RoleEnum.ADMIN)
+  @Roles(RoleEnum.ADMIN)
   async create(
     @CurrentUser() user: User,
     @Body() createBookstoreBookDto: CreateBookstoreBookDto
@@ -66,8 +66,17 @@ export class BookstoreBooksController {
         createBookstoreBookDto
       );
 
-      const response = new BookstoreBookOneResponseDto();
-      response.result = response.result;
+      const result = await this.bookstoreBooksService.findOneWithJoin(bookstoreBook.id);
+
+      const response = new BookstoreBookOneResponseDto(); 
+      response.result = new BookstoreBookResponseDto();
+      response.result.bookId = result.bookId;
+      response.result.bookstoreId = result.bookstoreId;
+      response.result.book = result.book;
+      response.result.bookQuantity = result.bookQuantity;
+      response.result.bookstore = new BookstoreOneResponseDto();
+      response.result.bookstore.result = result.bookstore;
+
       return response;
     } catch (error) {
       throw new BadRequestException(error.message);
@@ -177,9 +186,20 @@ export class BookstoreBooksController {
     @Body() updateBookstoreBookDto: UpdateBookstoreBookDto
   ) {
     try {
-      await this.bookstoreBooksService.update(user, id, updateBookstoreBookDto);
+      const bookstoreBook = await this.bookstoreBooksService.update(user, id, updateBookstoreBookDto);
 
-      return { result: "Bookstore's book has been successfully updated" };
+      const result = await this.bookstoreBooksService.findOneWithJoin(bookstoreBook.id);
+
+      const response = new BookstoreBookOneResponseDto();
+      response.result = new BookstoreBookResponseDto();
+      response.result.bookId = result.bookId;
+      response.result.bookstoreId = result.bookstoreId;
+      response.result.book = result.book;
+      response.result.bookQuantity = result.bookQuantity;
+      response.result.bookstore = new BookstoreOneResponseDto();
+      response.result.bookstore.result = result.bookstore;
+
+      return response;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
