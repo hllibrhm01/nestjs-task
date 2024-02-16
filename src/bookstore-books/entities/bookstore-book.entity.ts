@@ -18,13 +18,13 @@ export class BookstoreBook extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "int" })
+  @Column({ type: "int", nullable: false })
   bookId: number;
 
-  @Column({ type: "int" })
+  @Column({ type: "int", nullable: false })
   bookstoreId: number;
 
-  @Column({ type: "int" })
+  @Column({ type: "int", default: 0, nullable: false })
   bookQuantity: number;
 
   @CreateDateColumn({ type: "timestamptz" })

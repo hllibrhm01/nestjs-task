@@ -17,16 +17,16 @@ export class Bookstore {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", nullable: false })
   name: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", nullable: false })
   address: string;
 
-  @Column({ type: "varchar", unique: true })
+  @Column({ type: "varchar", unique: true, nullable: false })
   phone: string;
 
-  @Column({ type: "int" })
+  @Column({ type: "int", nullable: false })
   managerId: number;
 
   @CreateDateColumn({ type: "timestamptz" })

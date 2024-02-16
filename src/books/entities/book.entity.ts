@@ -15,22 +15,22 @@ export class Book {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", nullable: false })
   bookName: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", nullable: false })
   author: string;
 
-  @Column({ type: "varchar" })
+  @Column({ type: "varchar", nullable: false })
   publisher: string;
 
-  @Column({ type: "timestamptz" })
+  @Column({ type: "timestamptz", nullable: false })
   publishedDate: Date;
 
-  @Column({ type: "int" })
+  @Column({ type: "int", default: 0, nullable: false })
   price: number;
 
-  @Column({ type: "enum", enum: Categories })
+  @Column({ type: "enum", enum: Categories, nullable: false })
   category: Categories;
 
   @CreateDateColumn({ type: "timestamptz" })

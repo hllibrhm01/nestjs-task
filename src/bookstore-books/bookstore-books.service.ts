@@ -46,6 +46,9 @@ export class BookstoreBooksService extends CommonService<BookstoreBook> {
       createBookstoreBookDto.bookstoreId
     );
 
+    if(createBookstoreBookDto.bookQuantity < 0)
+      throw new BadRequestException(`Book quantity cannot be negative`);
+
     const bookstoreBook = this.bookstoreBookRepository.create(
       createBookstoreBookDto
     );
@@ -111,6 +114,10 @@ export class BookstoreBooksService extends CommonService<BookstoreBook> {
     }
 
     if (updateBookstoreBookDto.bookQuantity !== undefined) {
+
+      if (updateBookstoreBookDto.bookQuantity < 0)
+        throw new BadRequestException(`Book quantity cannot be negative`);
+
       bookstoreBook.bookQuantity = updateBookstoreBookDto.bookQuantity;
     }
 
