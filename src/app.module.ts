@@ -35,6 +35,7 @@ import { AppService } from "./app.service";
         synchronize: true,
         logging: false,
         softDelete: true,
+        ssl: true,
         dropSchema: true
       }),
       inject: [ConfigService]
