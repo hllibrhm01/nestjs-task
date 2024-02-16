@@ -12,7 +12,7 @@ async function bootstrap() {
   });
 
   const configService = app.get<ConfigService>(ConfigService);
-  const appPort = configService.get("PORT") ?? 3000;
+  const appPort = configService.get("PORT") ?? 8080;
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle("E-adam API")
