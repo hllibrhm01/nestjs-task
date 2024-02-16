@@ -30,7 +30,6 @@ import { QueryBookDto } from "./dto/query-book.dto";
 import { SortByObject } from "../utils/sortBy";
 import { BookQueryOrderDirection } from "./books.enum";
 import { PagedBookResponseDto } from "./dto/paged-book-response.dto";
-import { BookResponseDto } from "./dto/book-response.dto";
 import { BookOneResponseDto } from "./dto/book-one-response.dto";
 import { RolesGuard } from "../roles/roles.guard";
 import { Roles } from "../roles/roles.decorator";
@@ -152,7 +151,9 @@ export class BooksController {
   @Delete(":id")
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.ADMIN)
-  remove(@Param("id") id: number) {
-    return this.booksService.remove(id);
+  async remove(@Param("id") id: number) {
+    await this.booksService.remove(id);
+
+    return { result: "Book has been successfully deleted" };
   }
 }

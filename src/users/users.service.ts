@@ -24,7 +24,6 @@ export class UsersService extends CommonService<User> {
 
     if (existingUser) throw new Error("User with this email already exists");
 
-
     return this.userRepository.save(user);
   }
 

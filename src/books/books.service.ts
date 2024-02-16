@@ -36,6 +36,14 @@ export class BooksService extends CommonService<Book> {
     return await this.bookRepository.save(book);
   }
 
+  async findById(id: number) {
+    const book = await this.bookRepository.findOne({ where: { id } });
+
+    if (!book) throw new NotFoundException(`Book not found`);
+
+    return book;
+  }
+
   async remove(id: number) {
     const book = await this.bookRepository.findOne({ where: { id } });
 

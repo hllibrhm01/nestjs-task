@@ -33,7 +33,7 @@ import { JwtAuthGuard } from "./auth/jwt-auth.guard";
         entities: [User, Book, Bookstore, BookstoreBook, Token],
         synchronize: true,
         logging: false,
-        softDelete: true,
+        softDelete: true
         // dropSchema: true
       }),
       inject: [ConfigService]

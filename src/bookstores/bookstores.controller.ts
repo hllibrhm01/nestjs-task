@@ -159,7 +159,9 @@ export class BookstoresController {
   @Delete(":id")
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.ADMIN)
-  remove(@Param("id") id: number) {
-    return this.bookstoresService.remove(id);
+  async remove(@Param("id") id: number) {
+    await this.bookstoresService.remove(id);
+
+    return { result: "Bookstore has been successfully deleted" };
   }
 }

@@ -9,7 +9,7 @@ import {
   UseFilters,
   HttpException,
   HttpStatus,
-  HttpCode,
+  HttpCode
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { Public } from "./public.decorator";

@@ -28,14 +28,18 @@ import {
 } from "@nestjs/swagger";
 import { BookstoreBookOneResponseDto } from "./dto/bookstore-book-one-response.dto";
 import { QueryBookstoreBookDto } from "./dto/query-bookstore-book.dto";
-import { SortByObject } from "../utils/sortBy";
-import { BookstoreBookQueryOrderDirection } from "./bookstore-books.enum";
-import { BookstoreBookJoinResponseDto } from "./dto/bookstore-book-join-response.dto";
+import {
+  BookstoreBookQueryOrderBy,
+  BookstoreBookQueryOrderDirection
+} from "./bookstore-books.enum";
 import { CurrentUser } from "../auth/current-user.decorator";
 import { User } from "../users/entities/user.entity";
 import { RolesGuard } from "../roles/roles.guard";
 import { Roles } from "../roles/roles.decorator";
 import { RoleEnum } from "../roles/roles.enum";
+import { PagedBookstoreBookResponseDto } from "./dto/paged-bookstore-book-response.dto";
+import { BookstoreBookResponseDto } from "./dto/bookstore-book-response.dto";
+import { BookstoreOneResponseDto } from "../bookstores/dto/bookstore-one-response.dto";
 
 @ApiTags("bookstore-books")
 @ApiBearerAuth()
@@ -55,39 +59,49 @@ export class BookstoreBooksController {
   async create(
     @CurrentUser() user: User,
     @Body() createBookstoreBookDto: CreateBookstoreBookDto
-  ) {
+  ): Promise<BookstoreBookOneResponseDto> {
     try {
-    const bookstoreBook = await this.bookstoreBooksService.create(
-      user,
-      createBookstoreBookDto
-    );
+      const bookstoreBook = await this.bookstoreBooksService.create(
+        user,
+        createBookstoreBookDto
+      );
 
-    const response = new BookstoreBookOneResponseDto();
-    response.result = bookstoreBook;
-    return response;
+      const response = new BookstoreBookOneResponseDto();
+      response.result = response.result;
+      return response;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
 
   @Get()
-  async findAll(@Query() query: QueryBookstoreBookDto) {
+  @ApiResponse({
+    type: PagedBookstoreBookResponseDto
+  })
+  async findAll(
+    @Query() query: QueryBookstoreBookDto
+  ): Promise<PagedBookstoreBookResponseDto> {
     try {
       const limit = query.limit ?? 10;
       const page = query.page ?? 1;
       const skip = (page - 1) * limit;
 
-      const orderBy = query.orderBy ?? -1;
-      const sort: SortByObject = {};
-      sort[orderBy] =
-        query.orderDirection === BookstoreBookQueryOrderDirection.DESC ? -1 : 1;
+      const queryOrderBy =
+        query.orderBy === undefined
+          ? BookstoreBookQueryOrderBy.CREATED
+          : query.orderBy;
+      const queryOrderDirection =
+        query.orderDirection === undefined
+          ? BookstoreBookQueryOrderDirection.DESC
+          : query.orderDirection;
 
       const count = await this.bookstoreBooksService.getBookstoreBooksWithJoin(
         query.bookId,
         query.bookstoreId,
         limit,
         skip,
-        sort,
+        queryOrderBy,
+        queryOrderDirection,
         true
       );
 
@@ -97,62 +111,30 @@ export class BookstoreBooksController {
           query.bookstoreId,
           limit,
           skip,
-          sort,
+          queryOrderBy,
+          queryOrderDirection,
           false
         );
 
-      console.log(results);
-      return results;
+      const result = new PagedBookstoreBookResponseDto();
+      result.count = count;
+      result.page = page;
+      result.limit = limit;
+      result.result = results.map((bookstoreBook) => {
+        const response = new BookstoreBookResponseDto();
+        response.bookId = bookstoreBook.bookId;
+        response.bookstoreId = bookstoreBook.bookstoreId;
+        response.book = bookstoreBook.book;
+        response.bookQuantity = bookstoreBook.bookQuantity;
+        response.bookstore = new BookstoreOneResponseDto();
+        response.bookstore.result = bookstoreBook.bookstore;
 
-      // result.bookstore = results[0].bookstore;
-      // const result = new PagedBookstoreBookResponseDto();
-      // result.count = count;
-      // result.page = page;
-      // result.limit = limit;
-      // result.result = results;
-
-      // return result;
+        return response;
+      });
+      return result;
     } catch (error) {
       throw new BadRequestException(error.message);
     }
-
-    /*
-    const limit: number = query.limit ?? 10;
-    const page: number = query.page ?? 1;
-    const skip = (page - 1) * limit;
-
-    const orderBy = query.orderBy ?? -1;
-    const sort: SortByObject = {};
-    sort[orderBy] =
-      query.orderDirection === BookstoreBookQueryOrderDirection.DESC ? -1 : 1;
-
-    const queryObject = {
-      ...(query.bookId && { bookId: query.bookId }),
-      ...(query.bookstoreId && { bookstoreId: query.bookstoreId })
-    };
-
-    const count = await this.bookstoreBooksService.findAll(
-      queryObject,
-      undefined,
-      undefined,
-      null
-    );
-
-    const results = await this.bookstoreBooksService.findAll(
-      queryObject,
-      limit,
-      skip,
-      sort
-    );
-
-    const result = new PagedBookstoreBookResponseDto();
-    result.count = count[1];
-    result.page = page;
-    result.limit = limit;
-    result.result = results[0];
-
-    return result;
-    */
   }
 
   @ApiParam({
@@ -164,13 +146,19 @@ export class BookstoreBooksController {
   @Get(":id")
   @ApiNotFoundResponse({ description: "Bookstore's book not found" })
   async findOne(@Param("id") id: number) {
-    const bookstoreBook = await this.bookstoreBooksService.findOne(id);
+    const result = await this.bookstoreBooksService.findOneWithJoin(id);
 
-    if (!bookstoreBook)
-      throw new NotFoundException(`Bookstore's book not found`);
+    if (!result) throw new NotFoundException(`Bookstore's book not found`);
 
     const response = new BookstoreBookOneResponseDto();
-    response.result = bookstoreBook;
+    response.result = new BookstoreBookResponseDto();
+    response.result.bookId = result.bookId;
+    response.result.bookstoreId = result.bookstoreId;
+    response.result.book = result.book;
+    response.result.bookQuantity = result.bookQuantity;
+    response.result.bookstore = new BookstoreOneResponseDto();
+    response.result.bookstore.result = result.bookstore;
+
     return response;
   }
 
@@ -184,18 +172,14 @@ export class BookstoreBooksController {
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.ADMIN, RoleEnum.STORE_MANAGER)
   async update(
+    @CurrentUser() user: User,
     @Param("id") id: number,
     @Body() updateBookstoreBookDto: UpdateBookstoreBookDto
   ) {
     try {
-      const bookstoreBook = await this.bookstoreBooksService.update(
-        id,
-        updateBookstoreBookDto
-      );
+      await this.bookstoreBooksService.update(user, id, updateBookstoreBookDto);
 
-      const response = new BookstoreBookOneResponseDto();
-      response.result = bookstoreBook;
-      return response;
+      return { result: "Bookstore's book has been successfully updated" };
     } catch (error) {
       throw new BadRequestException(error.message);
     }
@@ -215,7 +199,9 @@ export class BookstoreBooksController {
   @Delete(":id")
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.ADMIN)
-  remove(@Param("id") id: number) {
-    return this.bookstoreBooksService.remove(id);
+  async remove(@Param("id") id: number) {
+    await this.bookstoreBooksService.remove(id);
+
+    return { result: "Bookstore's book has been successfully deleted" };
   }
 }

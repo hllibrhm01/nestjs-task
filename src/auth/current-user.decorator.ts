@@ -3,7 +3,7 @@ import { User } from "../users/entities/user.entity";
 import { Request } from "express";
 
 interface ExtendedRequest extends Request {
-  user: User; 
+  user: User;
 }
 
 export const CurrentUser = createParamDecorator(

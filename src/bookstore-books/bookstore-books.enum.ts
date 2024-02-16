@@ -4,6 +4,6 @@ export enum BookstoreBookQueryOrderBy {
 }
 
 export enum BookstoreBookQueryOrderDirection {
-  ASC = "asc",
-  DESC = "desc"
+  ASC = "ASC",
+  DESC = "DESC"
 }

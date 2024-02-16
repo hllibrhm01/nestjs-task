@@ -5,12 +5,14 @@ import { ConfigModule } from "@nestjs/config";
 import { BookstoreBook } from "./entities/bookstore-book.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { BookstoresModule } from "../bookstores/bookstores.module";
+import { BooksModule } from "../books/books.module";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([BookstoreBook]), 
+    TypeOrmModule.forFeature([BookstoreBook]),
     ConfigModule,
-    BookstoresModule
+    BookstoresModule,
+    BooksModule
   ],
   controllers: [BookstoreBooksController],
   providers: [BookstoreBooksService]

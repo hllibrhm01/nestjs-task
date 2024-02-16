@@ -7,11 +7,7 @@ import { ConfigModule } from "@nestjs/config";
 import { UsersModule } from "../users/users.module";
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Bookstore]), 
-    ConfigModule,
-    UsersModule
-  ],
+  imports: [TypeOrmModule.forFeature([Bookstore]), ConfigModule, UsersModule],
   controllers: [BookstoresController],
   exports: [BookstoresService],
   providers: [BookstoresService]

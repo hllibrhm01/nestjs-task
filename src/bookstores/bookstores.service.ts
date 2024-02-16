@@ -40,7 +40,9 @@ export class BookstoresService extends CommonService<Bookstore> {
       where: { name: createBookstoreDto.name }
     });
 
-    const userExists = await this.userSerivce.findOne(createBookstoreDto.managerId);
+    const userExists = await this.userSerivce.findOne(
+      createBookstoreDto.managerId
+    );
 
     const manager = await this.bookstoreRepository.findOne({
       where: { managerId: createBookstoreDto.managerId }
@@ -57,13 +59,21 @@ export class BookstoresService extends CommonService<Bookstore> {
       throw new NotFoundException(
         `Phone number ${createBookstoreDto.phone} already exists`
       );
-    
+
     if (existingName)
       throw new NotFoundException(
         `Bookstore ${createBookstoreDto.name} already exists`
       );
 
     return this.bookstoreRepository.save(bookstore);
+  }
+
+  async findById(id: number) {
+    const bookstore = await this.bookstoreRepository.findOne({ where: { id } });
+
+    if (!bookstore) throw new NotFoundException(`Bookstore not found`);
+
+    return bookstore;
   }
 
   async update(

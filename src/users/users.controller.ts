@@ -35,7 +35,6 @@ import { CreateUserDto } from "./dto/create-user.dto";
 
 @ApiTags("users")
 @ApiBearerAuth()
-
 @SerializeOptions({
   excludeExtraneousValues: true,
   excludePrefixes: ["_", "$"],
@@ -49,14 +48,14 @@ export class UsersController {
   @Post()
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.ADMIN)
-  async create (@Body() createUserDto: CreateUserDto) {
+  async create(@Body() createUserDto: CreateUserDto) {
     try {
       const user = await this.usersService.create(createUserDto);
 
       const response = new UserOneResponseDto();
       response.result = user;
       return response;
-    } catch (error) { 
+    } catch (error) {
       throw new BadRequestException(error.message);
     }
   }
@@ -151,7 +150,9 @@ export class UsersController {
   @Delete(":id")
   @UseGuards(RolesGuard)
   @Roles(RoleEnum.ADMIN)
-  remove(@Param("id") id: number) {
-    return this.usersService.remove(id);
+  async remove(@Param("id") id: number) {
+    await this.usersService.remove(id);
+
+    return { message: "User deleted successfully" };
   }
 }

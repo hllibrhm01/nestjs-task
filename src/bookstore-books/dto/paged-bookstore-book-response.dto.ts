@@ -6,7 +6,7 @@ import { ValidateNested } from "class-validator";
 export class PagedBookstoreBookResponseDto {
   @ApiProperty({
     description: "The list of bookstore books",
-    type: BookstoreBookResponseDto
+    type: [BookstoreBookResponseDto]
   })
   @Type(() => BookstoreBookResponseDto)
   @Expose()

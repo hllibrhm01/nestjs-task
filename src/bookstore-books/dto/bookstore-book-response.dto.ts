@@ -1,5 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
+import { Expose, Type } from "class-transformer";
+import { ValidateNested } from "class-validator";
+import { BookResponseDto } from "../../books/dto/book-response.dto";
+import { BookstoreOneResponseDto } from "../../bookstores/dto/bookstore-one-response.dto";
 
 export class BookstoreBookResponseDto {
   @ApiProperty({
@@ -25,4 +28,22 @@ export class BookstoreBookResponseDto {
   })
   @Expose()
   bookQuantity: number;
+
+  @ApiProperty({
+    description: "The book",
+    type: BookResponseDto
+  })
+  @Expose()
+  @Type(() => BookResponseDto)
+  @ValidateNested()
+  book: BookResponseDto;
+
+  @ApiProperty({
+    description: "The bookstore",
+    type: BookstoreOneResponseDto
+  })
+  @Expose()
+  @Type(() => BookstoreOneResponseDto)
+  @ValidateNested()
+  bookstore: BookstoreOneResponseDto;
 }

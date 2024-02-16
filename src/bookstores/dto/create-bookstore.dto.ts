@@ -30,7 +30,7 @@ export class CreateBookstoreDto {
     description: "The manager ID of the bookstore",
     type: Number,
     required: true
-  })  
+  })
   @Expose()
   managerId: number;
 }
