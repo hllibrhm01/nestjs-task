@@ -16,6 +16,7 @@ import { Token } from "./auth/entities/token.entity";
 import { TokenModule } from "./token/token.module";
 import { JwtAuthGuard } from "./auth/jwt-auth.guard";
 import { AppService } from "./app.service";
+import fs from "fs";
 
 @Module({
   imports: [
@@ -35,7 +36,9 @@ import { AppService } from "./app.service";
         synchronize: true,
         logging: false,
         softDelete: true,
-        ssl: true
+        ssl: {
+          ca: fs.readFileSync("./src/ca-certificate.crt").toString()
+        }
       }),
       inject: [ConfigService]
     }),
