@@ -17,8 +17,9 @@ async function bootstrap() {
   const appPort = configService.get("PORT") ?? 8080;
 
   const swaggerConfig = new DocumentBuilder()
-    .setTitle("E-adam API")
+    .setTitle("Nest Task API")
     .addServer(`http://localhost:${appPort}`, "Local")
+    .addServer(`https://lobster-app-czomu.ondigitalocean.app`, "Production")
     .setVersion("1")
     .addBearerAuth()
     .build();
